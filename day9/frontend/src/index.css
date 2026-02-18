@@ -30,3 +30,29 @@ html, body,#root{
 .note h1{
   color: rgb(146, 166, 255);
 }
+
+/* .editBox{
+  border: 2px solid rgb(7, 7, 7);
+  padding: 1rem;
+  border-radius: 1rem;
+  position: absolute;
+  background-color: rgb(13, 45, 105);
+  left: 50%;
+  transform: translate(-50%);
+  /* display: none; */
+/* } */
+
+/* .editBox input{
+  padding: 0.5rem 1rem;
+}
+
+.editBox p{
+  font-size: 0.8rem;
+  margin-block: 1rem;
+  color: rgb(255, 63, 63);
+}
+
+.editBox textarea{
+  padding: 1rem;
+  font-size: 1rem;
+} */ 

@@ -1,11 +1,13 @@
 const express = require("express")
 const noteModel = require("./models/note-model")
 const cors = require("cors")
+const path = require("path")
 
 const app = express()
 
 app.use(express.json())
 app.use(cors())
+app.use(express.static("./public"))
 
 
 app.get("/",(req,res)=>{
@@ -33,6 +35,41 @@ app.get("/api/notes", async (req,res)=>{
         message: "Notes fetched successfully.",
         notes
     })
+})
+
+
+app.delete("/api/notes/:id", async (req,res)=>{
+    const id = req.params.id
+    const note = await noteModel.findById(id)
+
+    if(!note){
+        return res.status(409).json({
+            message: "note does not exists!!"
+        })
+    }
+
+    await noteModel.findByIdAndDelete(id)
+
+    res.status(200).json({
+        message: "Note deleted successfully."
+    })
+})
+
+app.patch("/api/notes/:id", async (req,res)=>{
+    const id = req.params.id
+    const {description} = req.body
+
+    await noteModel.findByIdAndUpdate(id, {description})
+
+    res.status(200).json({
+        message: "note's description updated successfully."
+    })
+})
+
+console.log(__dirname);
+
+app.use("*name", (req,res)=>{
+    res.sendFile(path.join(__dirname,"..","/public/index.html"))
 })
 
 module.exports = app
