@@ -1,7 +1,8 @@
 const postModel = require("../models/post.model")
 const ImageKit = require("@imagekit/nodejs")
 const {toFile} = require("@imagekit/nodejs")
-const jwt = require("jsonwebtoken")
+const likeModel = require("../models/like.model")
+const userModel = require("../models/user.model")
 
 const imagekit = new ImageKit({
     privateKey: process.env.IMAGEKIT_PRIVATE_KEY
@@ -91,8 +92,62 @@ const getPostDetailsController = async (req,res)=>{
     }
 }
 
+const createLikeController = async (req,res)=>{
+    try{
+        const postId = req.params.postId
+        const username = req.user.username
+
+        const isPostExists = await postModel.findOne({
+            _id: postId
+        })
+
+        if(!isPostExists){
+            return res.status(404).json({
+                message: "Post don't exist! or not available anymore."
+            })
+        }
+
+        const isAlreadyLiked = await likeModel.findOne({
+            post: postId,
+            user: username
+        })
+
+        if(isAlreadyLiked){
+            return res.status(200).json({
+                message: "You have already liked this post."
+            })
+        }
+
+        const postsOwner = await userModel.findOne({
+            _id: isPostExists.user
+        })
+
+        if(!postsOwner){
+            return res.status(404).json({
+                message: "Actual Owner of this post is not available anymore on this server."
+            })
+        }
+
+        const likedPost = await likeModel.create({
+            post: postId,
+            user: username
+        })
+
+        res.status(201).json({
+            message: `You liked post which id = ${isPostExists._id} of post's_owner:'${postsOwner.username}' user.`,
+            likedPost: likedPost
+        })
+
+    } catch(err){
+        return res.status(500).json({
+            message: err.message
+        })
+    }
+}
+
 module.exports = {
     createPostController,
     getPostController,
-    getPostDetailsController
+    getPostDetailsController,
+    createLikeController
 }
