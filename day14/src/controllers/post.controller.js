@@ -10,25 +10,7 @@ const imagekit = new ImageKit({
 const createPostController = async (req,res)=>{
     const {caption} = req.body
 
-    const token = req.cookies.token
-
-    if(!token){
-        return res.status(401).json({
-            message: "Invalid token or token required... Unautorized access."
-        })
-    }
-
-    let decoded = null
-
-    try{
-        decoded = jwt.verify(token, process.env.JWT_SECRET)
-    } catch(err){
-        return res.status(401).json({
-            message: "user not authorized."
-        })
-    }
-    
-
+    const userId = req.user.id
 
     const file = await imagekit.files.upload({
         file: await toFile(Buffer.from(req.file.buffer), 'file'),
@@ -39,7 +21,7 @@ const createPostController = async (req,res)=>{
     const post = await postModel.create({
         caption,
         imgUrl: file.url,
-        user: decoded.id
+        user: userId
     })
 
     res.status(201).json({
@@ -50,25 +32,8 @@ const createPostController = async (req,res)=>{
 
 const getPostController = async (req,res)=>{
     
-    let token = req.cookies.token
 
-    if(!token){
-        return res.status(401).json({
-            message: "Invalid token or token required!"
-        })
-    }
-
-    let decoded = null;
-
-    try{
-        decoded = jwt.verify(token, process.env.JWT_SECRET)
-    } catch(err){
-        return res.status(401).json({
-            message: "user not authorized."
-        })
-    }
-
-    const userId = decoded.id
+    const userId = req.user.id
 
     const posts = await postModel.find({
         user: userId
@@ -94,25 +59,8 @@ const getPostController = async (req,res)=>{
 
 const getPostDetailsController = async (req,res)=>{
     try{
-        const token = req.cookies.token
-
-        if(!token){
-            return res.status(401).json({
-                message: "Invalid token or token required."
-            })
-        }
-
-        let decoded = null;
-
-        try{
-            decoded = jwt.verify(token, process.env.JWT_SECRET)
-        } catch(err){
-            return res.status(401).json({
-                message: "unauhorized access!"
-            })
-        }
-
-        const userId = decoded.id
+        
+        const userId = req.user.id
         const postId = req.params.postId
 
         const post = await postModel.findById(postId)
