@@ -1,0 +1,52 @@
+main{
+    width: 100%;
+    height: 100vh;
+
+    .formContainer{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        h1{
+            color: blue;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        form{
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            min-width: 25vw;
+
+            input,button{
+                font-size: 1.1rem;
+                padding-inline: 1rem;
+                padding-block: 0.5rem;
+                border-radius: 0.7rem;
+                border: 1px solid gray;
+                outline: none;
+            }
+
+            button{
+                cursor: pointer;
+                background-color: rgba(8, 55, 209, 0.824);
+                color: white;
+                font-weight: 600;
+                
+            }
+        }
+        p{
+            padding-top: 1rem;
+            user-select: none;
+        }
+        .switch{
+            color: blue;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    }
+}
