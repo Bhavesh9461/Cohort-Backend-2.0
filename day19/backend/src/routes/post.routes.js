@@ -29,6 +29,19 @@ postRouter.get("/details/:postId", identifyUser, postController.getPostDetailsCo
  * @route POST /api/posts/likes/:postId [protected]
  * @description like a post
  */
-postRouter.get("/likes/:postId", identifyUser, postController.createLikeController)
+postRouter.post("/likes/:postId", identifyUser, postController.createLikeController)
+
+/**
+ * @route POST /api/posts/unlikes/:postId [protected]
+ * @description unlike a post
+ */
+postRouter.post("/unlikes/:postId", identifyUser, postController.createUnlikeController)
+
+/**
+ * @route GET /api/posts/feed
+ * @description get all the posts created in the DB
+ * @access private
+ */
+postRouter.get("/feed", identifyUser, postController.getFeedController)
 
 module.exports = postRouter

@@ -1,0 +1,24 @@
+.nav-bar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 300px;
+    padding-inline: 0.3rem;
+    padding-block: 0.7rem;
+    
+    button{
+        transition: all 0.13s ease-in;
+        padding-block: 0.3rem;
+        padding-inline: 0.7rem;
+        border-radius: 1rem;
+        border: none;
+        outline: none;
+        background-color: rgb(255, 136, 0);
+        color: white;
+        cursor: pointer;
+
+        &:active{
+            transform: scaleX(0.7);
+        }
+    }
+}

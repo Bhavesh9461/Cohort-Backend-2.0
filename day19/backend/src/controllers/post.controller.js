@@ -145,9 +145,91 @@ const createLikeController = async (req,res)=>{
     }
 }
 
+const createUnlikeController = async (req,res)=>{
+    try{
+        const postId = req.params.postId
+        const username = req.user.username
+
+        const isPostExists = await postModel.findOne({
+            _id: postId
+        })
+
+        if(!isPostExists){
+            return res.status(404).json({
+                message: "Post don't exist! or not available anymore."
+            })
+        }
+
+        const isAlreadyLiked = await likeModel.findOne({
+            post: postId,
+            user: username
+        })
+
+        if(!isAlreadyLiked){
+            return res.status(200).json({
+                message: "You have already unliked this post."
+            })
+        }
+
+        const postsOwner = await userModel.findOne({
+            _id: isPostExists.user
+        })
+
+        if(!postsOwner){
+            return res.status(404).json({
+                message: "Actual Owner of this post is not available anymore on this server."
+            })
+        }
+
+        const unlikedPost = await likeModel.findOneAndDelete({_id: isAlreadyLiked._id})
+
+        res.status(201).json({
+            message: `You unliked post which id = ${isPostExists._id} of post's_owner:'${postsOwner.username}' user.`,
+            unlikedPost: unlikedPost
+        })
+
+    } catch(err){
+        return res.status(500).json({
+            message: err.message
+        })
+    }
+}
+
+const getFeedController = async (req,res) => {
+    try{
+
+        const user = req.user
+// .sort({_id: -1})
+        const posts = await Promise.all((await postModel.find().populate("user").lean())
+            .map(async (post)=>{
+
+                const isLiked = await likeModel.findOne({
+                    user: user.username,
+                    post: post._id
+                })
+
+                post.isLiked = !!isLiked
+
+                return post
+            }))
+
+        res.status(200).json({
+            message: "posts fetched successfully",
+            posts
+        })
+    }
+    catch(err){
+        res.status(500).json({
+            message: err.message
+        })
+    }
+}
+
 module.exports = {
     createPostController,
     getPostController,
     getPostDetailsController,
-    createLikeController
+    createLikeController,
+    getFeedController,
+    createUnlikeController
 }
